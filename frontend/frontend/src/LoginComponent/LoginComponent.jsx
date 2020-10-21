@@ -1,11 +1,13 @@
 import React, { useState } from 'react';
 import axios from 'axios';
+import { useEffect } from 'react';
 
 
 const LoginComponent = () => {
 
         const [email, setEmail] = useState("");
         const [password, setPassword] = useState("");
+        const [user, setUser] = useState("")
     
 
         const handleSubmit = (e) => {
@@ -18,6 +20,7 @@ const LoginComponent = () => {
             };
 
             postCredentials(data);
+            
         };
 
         const url = "http://127.0.0.1:8090"
@@ -28,13 +31,19 @@ const LoginComponent = () => {
                 url: url+ '/loginCreds',
                 data : { data }
             }
-            const response = await fetch(url)
-            let req = await axios(config)
-        }
+            let response = await axios(config);
+            setUser(response.data);
+            console.log(`response is : ${response.data}`);
+            
+            console.log(user.value);
+            if (response.data == "true_post") {
+                console.log("LOGIN WORKS!")
+            }
+            else { console.log("LOGIN DOES NOT WORK")}
 
-        const getCredentials = async() => {
-            const response = await fetch("")
         }
+        useEffect(() => console.log(user, [user]) );
+
 
 
 

@@ -1,6 +1,9 @@
 import mysql.connector
+import configparser
+
 
 # Connecting to the database
+
 conn = mysql.connector.connect(
     host = "localhost",
     user = "root",
@@ -9,6 +12,12 @@ conn = mysql.connector.connect(
     port = 3306
 )
 
+# Connecting to the database
+config = configparser.ConfigParser()
+config.read('config.ini')
+
+
+
 # test execute to assure that access is given
 cur = conn.cursor() # in order to execute querys
 
@@ -16,6 +25,8 @@ cur.execute("SHOW DATABASES")
 
 for x in cur:
     print(x)
+
+
 
 #close connection
 conn.close()

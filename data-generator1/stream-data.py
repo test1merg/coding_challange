@@ -74,8 +74,8 @@ def addDeal(data):
 
     #time_obj = datetime.datetime.strftime(time, '%Y-%m-%d %H:%M:%S.%f')
     #time_obj = str(datetime.datetime.strptime(time))
-    time_obj = parser.parse(time).isoformat()
-    print(time + "   " + time_obj) 
+    #time_obj = parser.parse(time).isoformat()
+    #print(time + "   " + time_obj) 
 
 
     deal_query = "INSERT INTO deal(deal_id, deal_time, deal_counterparty_id, deal_instrument_id, \

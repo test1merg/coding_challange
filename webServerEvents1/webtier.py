@@ -47,7 +47,7 @@ def historicData():
         data = request.get_json()
         print(data)
         response = requests.post(url,json = data )
-        print("response text from webtier is {}".format(response.text))
+        print("historic response text from webtier is {}".format(response.text))
         return response.text
     elif request.method == "GET":
         return "true"

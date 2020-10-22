@@ -26,7 +26,8 @@ def sse_stream():
 @app.route('/validateLoginCreds', methods=["POST"])
 def validate_creds():
     if request.method == "POST":
-        print("true from data-gen")
+        data = request.get_json()
+        print("true from data-gen : {}".format(data))
         return "true_from_data-gen"
 
 

@@ -15,7 +15,7 @@ function App() {
 
 
   return login ? (
-      <AuthWebSite></AuthWebSite>
+      <AuthWebSite handleLogin = { handleLogin }></AuthWebSite>
     ) :
     (
       <div className="App">

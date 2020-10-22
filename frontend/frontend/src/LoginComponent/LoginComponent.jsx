@@ -3,7 +3,7 @@ import axios from 'axios';
 import { useEffect } from 'react';
 
 
-const LoginComponent = () => {
+const LoginComponent = ({ handleLogin }) => {
 
         const [email, setEmail] = useState("");
         const [password, setPassword] = useState("");
@@ -18,8 +18,8 @@ const LoginComponent = () => {
             };
 
             postCredentials(data);
-            
         };
+
 
         const url = "http://127.0.0.1:8090"
 
@@ -30,6 +30,7 @@ const LoginComponent = () => {
                 data : { data }
             }
             let response = await axios(config);
+            handleLogin(response.data)
             setUser(response.data);
             console.log(`response is : ${response.data}`);
             
@@ -39,10 +40,12 @@ const LoginComponent = () => {
             else { 
                 console.log(typeof(response.data))
                 console.log(`login failed: ${response.data}`);
-                console.log("LOGIN DOES NOT WORK")}
-
+                console.log("LOGIN DOES NOT WORK")};
+            return response.data;
         }
-        useEffect(() => console.log(user, [user]) );
+
+        useEffect(() => 
+        console.log(user, [user]) );
 
 
 

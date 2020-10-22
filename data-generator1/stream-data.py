@@ -1,8 +1,8 @@
 import requests
 import json
 import mysql.connector
-import datetime
-import dateutil.parser as parser
+#import datetime
+#import dateutil.parser as parser
 
 # data = original json line, jsonValue = key name, dbValue = column name, idValue = id primary key, 
 # dbTable = table from db, idCounter = beginning value for id

@@ -40,6 +40,19 @@ def login():
         return "true"
 
 
+@app.route('/historicData', methods=["GET", "POST"])
+def historicData():
+    url = "http://127.0.0.1:8080/getHistoricData"
+    if request.method == "POST":
+        data = request.get_json()
+        print(data)
+        response = requests.post(url,json = data )
+        print("response text from webtier is {}".format(response.text))
+        return response.text
+    elif request.method == "GET":
+        return "true"
+
+
 
 def get_message():
     """this could be any function that blocks until data is ready"""

@@ -33,10 +33,13 @@ const LoginComponent = () => {
             setUser(response.data);
             console.log(`response is : ${response.data}`);
             
-            if (response.data == "true_from_data-gen") {
+            if (response.data == true) {
                 console.log("LOGIN WORKS!")
             }
-            else { console.log("LOGIN DOES NOT WORK")}
+            else { 
+                console.log(typeof(response.data))
+                console.log(`login failed: ${response.data}`);
+                console.log("LOGIN DOES NOT WORK")}
 
         }
         useEffect(() => console.log(user, [user]) );

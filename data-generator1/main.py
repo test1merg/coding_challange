@@ -2,6 +2,7 @@ from flask import Flask, Response, request
 from flask_cors import CORS
 import webServiceStream
 from RandomDealData import *
+import UserValidationDAO
 
 app = Flask(__name__)
 CORS(app)
@@ -26,9 +27,16 @@ def sse_stream():
 @app.route('/validateLoginCreds', methods=["POST"])
 def validate_creds():
     if request.method == "POST":
-        data = request.get_json()
+        data = request.get_json()["data"]
         print("true from data-gen : {}".format(data))
-        return "true_from_data-gen"
+        result = UserValidationDAO.loginValidationCheck(data["email"], data["password"])
+        print("result from data_gen {}".format(result))
+        if result == 1:
+            return "true"
+        elif result == 0:
+            return "false"
+        else:
+            return "error"
 
 
 

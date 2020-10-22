@@ -10,7 +10,7 @@ CORS(app)
 
 @app.route('/deals')
 def forwardStream():
-    r = requests.get('http://localhost:8080/streamTest', stream=True)
+    r = requests.get('http://localhost:8080/streamTest/sse', stream=True)
     def eventStream():
             for line in r.iter_lines( chunk_size=1):
                 if line:

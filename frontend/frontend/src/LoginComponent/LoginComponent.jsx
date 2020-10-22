@@ -33,10 +33,6 @@ const LoginComponent = ({ handleLogin }) => {
             return response.data;
         }
 
-
-
-
-
         return (
             <div className="Login">
                 <form onSubmit= { handleSubmit }>

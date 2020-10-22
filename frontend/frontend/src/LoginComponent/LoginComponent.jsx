@@ -1,15 +1,12 @@
 import React, { useState } from 'react';
 import axios from 'axios';
-import { useEffect } from 'react';
 
 
 const LoginComponent = ({ handleLogin }) => {
 
         const [email, setEmail] = useState("");
         const [password, setPassword] = useState("");
-        const [user, setUser] = useState("")
-    
-
+ 
         const handleSubmit = (e) => {
             e.preventDefault();
             const data = {
@@ -31,21 +28,10 @@ const LoginComponent = ({ handleLogin }) => {
             }
             let response = await axios(config);
             handleLogin(response.data)
-            setUser(response.data);
-            console.log(`response is : ${response.data}`);
             
-            if (response.data == true) {
-                console.log("LOGIN WORKS!")
-            }
-            else { 
-                console.log(typeof(response.data))
-                console.log(`login failed: ${response.data}`);
-                console.log("LOGIN DOES NOT WORK")};
+            
             return response.data;
         }
-
-        useEffect(() => 
-        console.log(user, [user]) );
 
 
 

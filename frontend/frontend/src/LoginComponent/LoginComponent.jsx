@@ -12,8 +12,6 @@ const LoginComponent = () => {
 
         const handleSubmit = (e) => {
             e.preventDefault();
-            console.log(password);
-            console.log(email);
             const data = {
                 "email" : email,
                 "password" : password
@@ -35,8 +33,7 @@ const LoginComponent = () => {
             setUser(response.data);
             console.log(`response is : ${response.data}`);
             
-            console.log(user.value);
-            if (response.data == "true_post") {
+            if (response.data == "true_from_data-gen") {
                 console.log("LOGIN WORKS!")
             }
             else { console.log("LOGIN DOES NOT WORK")}

@@ -1,4 +1,4 @@
-from flask import Flask, render_template, Response
+from flask import Flask, render_template, Response, request
 from flask_sse import sse
 from flask_cors import CORS
 import requests
@@ -26,6 +26,19 @@ def client_to_server():
 @app.route('/index')
 def index():
     return "webtier service points are running..."
+
+@app.route('/loginCreds', methods=["GET", "POST"])
+def login():
+    url = "http://127.0.0.1:8080/validateLoginCreds"
+    if request.method == "POST":
+        data = request.get_json()
+        print(data)
+        response = requests.post(url,json = data )
+        print("response text from webtier is {}".format(response.text))
+        return response.text
+    elif request.method == "GET":
+        return "true"
+
 
 
 def get_message():

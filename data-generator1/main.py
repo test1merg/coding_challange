@@ -1,4 +1,4 @@
-from flask import Flask, Response
+from flask import Flask, Response, request
 from flask_cors import CORS
 import webServiceStream
 from RandomDealData import *
@@ -22,6 +22,13 @@ def stream():
 @app.route('/streamTest/sse')
 def sse_stream():
      return webServiceStream.sse_stream()
+
+@app.route('/validateLoginCreds', methods=["POST"])
+def validate_creds():
+    if request.method == "POST":
+        print("true from data-gen")
+        return "true_from_data-gen"
+
 
 
 def bootapp():

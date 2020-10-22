@@ -1,46 +1,6 @@
 import requests
 import json
 import mysql.connector
-#import datetime
-#import dateutil.parser as parser
-
-# data = original json line, jsonValue = key name, dbValue = column name, idValue = id primary key, 
-# dbTable = table from db, idCounter = beginning value for id
-
-# data, instrumentName, instrument_name, instrument_id, instrument, 1001
-# data, cpty (counterparty name), counterparty_name, counterparty_id, counterparty, 701
-def addEntry(data, jsonValue, dbValue, idValue, dbTable, idCounter):
-
-    variable_name = data[jsonValue]
-
-    query1 = "SELECT " + dbValue + " FROM " + dbTable + " WHERE " + dbValue + " = %s"
-    cur.execute(query1, (variable_name,))
-    result = cur.fetchone()
-
-    print(result)
-    
-    if result == None:
-    
-        cur.execute("SELECT * FROM " + dbTable + " WHERE " + idValue + " = (SELECT MAX(" + idValue + ") FROM " + dbTable + ")")
-        variable_id = cur.fetchone()
-    
-        if variable_id == None:
-            variable_id = idCounter
-        else:
-            variable_id = variable_id[0] + 1
-
-        if dbTable == "instrument":
-            query2 = "INSERT INTO " + dbTable + " (" + idValue + ", " + dbValue + ") VALUES(%s, %s)" #sql injection
-        elif dbTable == "counterparty":
-            query2 = "INSERT INTO " + dbTable + " (" + idValue + ", " + dbValue + ", 'A', ) VALUES(%s, %s)" #sql injection
-        
-        data = (variable_id, variable_name)
-        cur.execute(query2, data)
-
-        #print(str(variable_id) + " " + variable_name)
-
-    conn.commit()
-
 
 def addDeal(data):
 
@@ -69,14 +29,12 @@ def addDeal(data):
     counterparty_id = cur.fetchone()[0]
 
     print("ctpy_id" + str(counterparty_id))
-    #20-Oct-2020 (10:13:24.895101)
-    #YYYY-MM-DDTHH:MM:SS.SSS
-
-    #time_obj = datetime.datetime.strftime(time, '%Y-%m-%d %H:%M:%S.%f')
-    #time_obj = str(datetime.datetime.strptime(time))
-    #time_obj = parser.parse(time).isoformat()
-    #print(time + "   " + time_obj) 
-
+    
+    #Convert 20-Oct-2020 (10:13:24.895101)  to YYYY-MM-DDTHH:MM:SS.SSS
+    months = {"Jan":"01", "Feb":"02", "Mar":"03", "Apr":"04", "May":"05", "Jun":"06","Jul":"07",
+    "Aug":"08", "Sep":"09", "Oct":"10", "Nov":"11", "Dec":"12"}
+    
+    time_obj = time[7:11] + "-" + months[time[3:6]] + "-" + time[0:2] + "T" + time[13:25]
 
     deal_query = "INSERT INTO deal(deal_id, deal_time, deal_counterparty_id, deal_instrument_id, \
     deal_type, deal_amount, deal_quantity) VALUES(%s, %s, %s, %s, %s, %s, %s)" 
@@ -86,31 +44,14 @@ def addDeal(data):
     conn.commit()
 
 
-def verifyLogin(json):
-    username = json["username"]
-    pwd = json["password"]
-
-    login_query = "SELECT user_id, user_pwd FROM users WHERE user_id = %s"
-    cur.execute(login_query, (username,))
-    result = cur.fetchone()
-
-    if result == None:
-        return False
-    else:
-        if result[1] == pwd:
-            return True
-        else:
-            return False
-
-
 def getHistoricData(counterparty_name, limit):
 
     counterparty_query = "SELECT counterparty_id FROM counterparty WHERE counterparty_name = %s"
     cur.execute(counterparty_query, (counterparty_name,))
     counterparty_id = cur.fetchone()[0]
 
-    deal_query = "SELECT * FROM deal WHERE deal_counterparty_id = %s"
-    cur.execute(deal_query, (counterparty_id,))
+    deal_query = "SELECT * FROM deal WHERE deal_counterparty_id = %s ORDER BY deal_id DESC LIMIT %s"
+    cur.execute(deal_query, (counterparty_id, limit))
     deal_results = cur.fetchall()
 
     deals = []
@@ -133,10 +74,10 @@ def getHistoricData(counterparty_name, limit):
 
         deal_json = json.dumps(deal_dict)
 
-        print(deal_json)
+        deals.append(deal_json)
 
-    return deal_json
-
+    print(deals)
+    return deals
 
 
 # Connecting to the database
@@ -155,20 +96,15 @@ response = requests.get(url, stream=True)
 # test execute to assure that access is given
 cur = conn.cursor() # in order to execute querys
 
-#cur.execute("DELETE FROM instrument;",)
+#conn.commit()
 
-
-#getHistoricData("Lewis")
-
-
-for line in response.iter_lines():
+getHistoricData("Lewis", 5)
+'''for line in response.iter_lines():
     if line:
-
         data = json.loads(line)
         print(data)
-        #addEntry(data, "instrumentName", "instrument_name", "instrument_id", "instrument", 1001)
         addDeal(data)
-
+'''
 
 for x in cur:
     print(x)

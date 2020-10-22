@@ -2,38 +2,6 @@ import requests
 import json
 import mysql.connector
 
-'''
-instrument_name = data["instrumentName"]
-    #print(instrument_name)
-
-    query1 = "SELECT instrument_name FROM instrument WHERE instrument_name = %s"
-    cur.execute(query1, (instrument_name,))
-    instrument_result = cur.fetchone()
-
-    print(instrument_result)
-    
-
-    if instrument_result == None:
-    
-        cur.execute("SELECT * FROM instrument WHERE instrument_id = (SELECT MAX(instrument_id) FROM instrument)")
-        instrument_id = cur.fetchone()
-    
-        if instrument_id == None:
-            instrument_id = 1001
-        else:
-            instrument_id = instrument_id[0] + 1
-
-        
-
-        query2 = "INSERT INTO instrument (instrument_id, instrument_name) VALUES(%s, %s)" #sql injection
-        data = (instrument_id, instrument_name)
-        cur.execute(query2, data)
-
-        #print(str(instrument_id) + " " + instrument_name)
-
-    conn.commit()
-'''
-
 # data = original json line, jsonValue = key name, dbValue = column name, idValue = id primary key, 
 # dbTable = table from db, idCounter = beginning value for id
 
@@ -61,7 +29,7 @@ def addEntry(data, jsonValue, dbValue, idValue, dbTable, idCounter):
 
         if dbTable == "instrument":
             query2 = "INSERT INTO " + dbTable + " (" + idValue + ", " + dbValue + ") VALUES(%s, %s)" #sql injection
-        else if dbTable == "counterparty":
+        elif dbTable == "counterparty":
             query2 = "INSERT INTO " + dbTable + " (" + idValue + ", " + dbValue + ", 'A', ) VALUES(%s, %s)" #sql injection
         
         data = (variable_id, variable_name)
@@ -72,6 +40,57 @@ def addEntry(data, jsonValue, dbValue, idValue, dbTable, idCounter):
     conn.commit()
 
 
+def addDeal(data):
+
+    instrument_name = data["instrumentName"]
+    counterparty_name = data["cpty"]
+    price = data["price"]
+    type_bs = data["type"]
+    quantity = data["quantity"]
+    time = data["time"]
+
+    cur.execute("SELECT deal_id FROM deal WHERE deal_id = (SELECT MAX(deal_id) FROM deal)")
+    deal_id = cur.fetchone()
+    
+    deal_id = deal_id[0] + 1
+
+    print("deal_id " + str(deal_id))
+
+    instrument_query = "SELECT instrument_id FROM instrument WHERE instrument_name = %s"
+    cur.execute(instrument_query, (instrument_name,))
+    instrument_id = cur.fetchone()[0]
+
+    print("instrument_id " + str(instrument_id))
+
+    counterparty_query = "SELECT counterparty_id FROM counterparty WHERE counterparty_name = %s"
+    cur.execute(counterparty_query, (counterparty_name,))
+    counterparty_id = cur.fetchone()[0]
+
+    print("ctpy_id" + str(counterparty_id))
+
+    deal_query = "INSERT INTO deal(deal_id, deal_time, deal_counterparty_id, deal_instrument_id, \
+    deal_type, deal_amount, deal_quantity) VALUES(%s, %s, %s, %s, %s, %s, %s)" 
+    deal_data = (deal_id, time, counterparty_id, instrument_id, type_bs, price, quantity)
+    cur.execute(deal_query, deal_data)
+
+    conn.commit()
+
+
+def verifyLogin(json):
+    username = json["username"]
+    pwd = json["password"]
+
+    login_query = "SELECT user_id, user_pwd FROM users WHERE user_id = %s"
+    cur.execute(login_query, (username,))
+    result = cur.fetchone()
+
+    if result == None:
+        return False
+    else:
+        if result[1] == pwd:
+            return True
+        else:
+            return False
 
 
 # Connecting to the database
@@ -79,7 +98,7 @@ conn = mysql.connector.connect(
     host = "localhost",
     user = "root",
     password = "ppp",
-    database = "db_grad_cs_1917_no_deal_data",
+    database = "db_grad_cs_1917",
     port = 3306
 )
 
@@ -92,14 +111,19 @@ cur = conn.cursor() # in order to execute querys
 
 #cur.execute("DELETE FROM instrument;",)
 
+print(verifyLogin({"username" : "alison1", "password" : "h"}))
+print(verifyLogin({"username" : "alison", "password" : "h"}))
+print(verifyLogin({"username" : "alison", "password" : "gradprog2016@07"}))
+
+'''
 for line in response.iter_lines():
     if line:
 
         data = json.loads(line)
-        addEntry(data, "instrumentName", "instrument_name", "instrument_id", "instrument", 1001)
-        
-
-#conn.commit()
+        print(data)
+        #addEntry(data, "instrumentName", "instrument_name", "instrument_id", "instrument", 1001)
+        addDeal(data)
+'''
 
 for x in cur:
     print(x)

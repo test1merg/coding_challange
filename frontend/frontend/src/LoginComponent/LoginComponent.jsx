@@ -1,15 +1,12 @@
 import React, { useState } from 'react';
 import axios from 'axios';
-import { useEffect } from 'react';
 
 
-const LoginComponent = () => {
+const LoginComponent = ({ handleLogin }) => {
 
         const [email, setEmail] = useState("");
         const [password, setPassword] = useState("");
-        const [user, setUser] = useState("")
-    
-
+ 
         const handleSubmit = (e) => {
             e.preventDefault();
             const data = {
@@ -18,8 +15,8 @@ const LoginComponent = () => {
             };
 
             postCredentials(data);
-            
         };
+
 
         const url = "http://127.0.0.1:8090"
 
@@ -30,23 +27,11 @@ const LoginComponent = () => {
                 data : { data }
             }
             let response = await axios(config);
-            setUser(response.data);
-            console.log(`response is : ${response.data}`);
+            handleLogin(response.data)
             
-            if (response.data == true) {
-                console.log("LOGIN WORKS!")
-            }
-            else { 
-                console.log(typeof(response.data))
-                console.log(`login failed: ${response.data}`);
-                console.log("LOGIN DOES NOT WORK")}
-
+            
+            return response.data;
         }
-        useEffect(() => console.log(user, [user]) );
-
-
-
-
 
         return (
             <div className="Login">

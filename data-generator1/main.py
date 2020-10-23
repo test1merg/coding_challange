@@ -38,13 +38,12 @@ def validate_creds():
         else:
             return "error"
 
-@app.route('/getHistoricData', methods=["POST", "GET"])
-def fetch_historic_data():
-    if request.method == "GET":
-        data = request.get_json()["data"]
-        result = stream-data.getHistoricData(data["counterparty_name"], data["limit"])
-        return result
-        
+@app.route('/getHistoricData/<name>/<limit>', methods=["GET"])
+def fetch_historic_data(name, limit):
+    print("hi")
+    result = HistoricDataDAO.getHistoricData(name, limit)
+    #print("result is {} with type {}".format(result, type(result)))
+    return result
 
 def bootapp():
     #global rdd 

@@ -1,3 +1,5 @@
+
+
 import React, { useState } from 'react';
 import axios from 'axios';
 
@@ -9,22 +11,17 @@ const HistoricDataComponent = () => {
 
     const handleSubmit = (e) => {
         e.preventDefault();
-        const data = {
-            "counterparty_name" : name,
-            "limit" : limit
-        };
-        postParamtersForHistoricData(data);
+        // const data = {
+        //     "counterparty_name" : name,
+        //     "limit" : limit
+        // };
+        postParamtersForHistoricData(name, limit);
 
     }
-    const url = "http://127.0.0.1:8090"
-    const postParamtersForHistoricData = async (data) => {
-        const config =  {
-            method : 'post',
-            url: url + '/historicData',
-            data : { data }
-        }
-        let response = await axios(config)
-        console.log(`response of historic data is ${response}`);
+    const url = "http://127.0.0.1:8090/historicData"
+    const postParamtersForHistoricData = async (name, limit) => {
+        console.log(`url of historic is ${url}/${name}/${limit}`)
+        let response = await axios.get(`${url}/${name}/${limit}`)
     }
 
     return (

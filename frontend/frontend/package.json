@@ -9,6 +9,7 @@
     "@testing-library/user-event": "^7.1.2",
     "axios": "^0.20.0",
     "react": "^17.0.0",
+    "react-border-wrapper": "^1.0.3",
     "react-dom": "^17.0.0",
     "react-scripts": "3.4.4",
     "rxjs-hooks": "^0.6.2"

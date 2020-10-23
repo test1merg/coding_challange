@@ -4,7 +4,7 @@ import axios from 'axios';
 import { useObservable } from 'rxjs-hooks';
 import { Observable } from 'rxjs';
 import { map, withLatestFrom } from 'rxjs/operators';
-
+import BorderWrapper from 'react-border-wrapper'
 
 const stringObservable = Observable.create(observer => {
     const url = 'http://localhost:8090/deals'
@@ -36,8 +36,11 @@ const DataStreamComponent = () => {
     );
 
     return (
+
     <>
+    <BorderWrapper>
     {stringArray ? stringArray.map((message, index) => <p key={index}>{message}</p>) : <p>Loading...</p>}
+    </BorderWrapper>
     </>
     )
 

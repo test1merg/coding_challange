@@ -19,7 +19,7 @@ function App() {
     ) :
     (
       <div className="App">
-        <h1> hello { login.toString() } </h1>
+        <h1> Welcome to the deal app </h1>
         <LoginComponent handleLogin = { handleLogin }/>
       </div>
   );

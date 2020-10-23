@@ -11,7 +11,7 @@ const stringObservable = Observable.create(observer => {
 
       const source = new EventSource(url);
         source.addEventListener('message', (messageEvent) => {
-                console.log(messageEvent);
+                // console.log(messageEvent);
                     observer.next(messageEvent.data);
         }, false);
         });

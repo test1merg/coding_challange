@@ -46,11 +46,24 @@ def addDeal(data):
 
 def getHistoricData(counterparty_name, limit):
 
-    counterparty_query = "SELECT counterparty_id FROM counterparty WHERE counterparty_name = %s"
+    conn = mysql.connector.connect(
+        host = "localhost",
+        user = "root",
+        password = "ppp",
+        database = "db_grad_cs_1917",
+        port = 3306
+    )
+
+    cur = conn.cursor()
+
+    counterparty_query = "SELECT counterparty_id FROM counterparty WHERE counterparty_name = %s;"
     cur.execute(counterparty_query, (counterparty_name,))
     counterparty_id = cur.fetchone()[0]
 
-    deal_query = "SELECT * FROM deal WHERE deal_counterparty_id = %s ORDER BY deal_id DESC LIMIT %s"
+    deal_query = "SELECT * FROM deal WHERE deal_counterparty_id = %s ORDER BY deal_id DESC LIMIT %s;"
+
+    #deal_query = "SELECT * FROM deal WHERE deal_counterparty_id = {} ORDER BY deal_id DESC LIMIT {}".format(counterparty_id,limit)
+    #print("DEAL: " + deal_query)
     cur.execute(deal_query, (counterparty_id, limit))
     deal_results = cur.fetchall()
 
@@ -58,7 +71,7 @@ def getHistoricData(counterparty_name, limit):
 
     for deal in deal_results:
         instrument_id = deal[3]
-        instrument_query = "SELECT instrument_name FROM instrument WHERE instrument_id = %s"
+        instrument_query = "SELECT instrument_name FROM instrument WHERE instrument_id = %s;"
         cur.execute(instrument_query, (instrument_id,))
         instrument_name = cur.fetchone()[0]
 
@@ -77,28 +90,25 @@ def getHistoricData(counterparty_name, limit):
         deals.append(deal_json)
 
     print(deals)
-    return deals
+    conn.close()
+
+    deals_json = json.dumps(deals)
+    return deals_json
 
 
 # Connecting to the database
-conn = mysql.connector.connect(
-    host = "localhost",
-    user = "root",
-    password = "ppp",
-    database = "db_grad_cs_1917",
-    port = 3306
-)
+
 
 # Fetching data
-url = "http://127.0.0.1:8080/streamTest"
-response = requests.get(url, stream=True)
+# url = "http://127.0.0.1:8080/streamTest"
+# response = requests.get(url, stream=True)
 
 # test execute to assure that access is given
-cur = conn.cursor() # in order to execute querys
+#cur = conn.cursor() # in order to execute querys
 
 #conn.commit()
 
-getHistoricData("Lewis", 5)
+#getHistoricData("Lewis", 5)
 '''for line in response.iter_lines():
     if line:
         data = json.loads(line)
@@ -106,8 +116,8 @@ getHistoricData("Lewis", 5)
         addDeal(data)
 '''
 
-for x in cur:
-    print(x)
+# for x in cur:
+#     print(x)
 
 #close connection
-conn.close()
+# conn.close()

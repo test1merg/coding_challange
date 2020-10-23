@@ -3,6 +3,7 @@ from flask_cors import CORS
 import webServiceStream
 from RandomDealData import *
 import UserValidationDAO
+import streamData
 
 app = Flask(__name__)
 CORS(app)
@@ -41,9 +42,15 @@ def validate_creds():
 @app.route('/getHistoricData/<name>/<limit>', methods=["GET"])
 def fetch_historic_data(name, limit):
     print("hi")
-    result = HistoricDataDAO.getHistoricData(name, limit)
+    result = streamData.getHistoricData(name, int(limit))
     #print("result is {} with type {}".format(result, type(result)))
     return result
+
+# @app.route('/getHistoricData/<counterparty_name>/<limit>', methods=["GET"])
+# def fetch_historic_data(counterparty_name, limit):
+#     url = "http://127.0.0.1:8080/getHistoricData/{}/{}".format(counterparty_name, limit)
+#     result = stream-data.getHistoricData(counterparty_name, limit)
+#     return result
 
 def bootapp():
     #global rdd 
